@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Little Star International School</title>
+
+    <!-- Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#ff5f6d">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #162447);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #ff5f6d, #ffc371);
+            padding: 20px;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        section {
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+        }
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .card {
+            background: linear-gradient(145deg, #1f4068, #1b1b2f);
+            border-radius: 15px;
+            padding: 20px;
+            width: 200px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(255, 95, 109, 0.5);
+        }
+        .card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        form {
+            margin: 20px auto;
+            text-align: center;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        button {
+            background: #ff5f6d;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #ffc371;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Little Star International School
+    </header>
+
+    <!-- Sezione Storia dell'Asilo -->
+    <section>
+        <h2>La nostra storia</h2>
+        <p>
+            Little Star International School nasce nel 2005 con l’obiettivo di creare un ambiente sicuro e creativo per i bambini. 
+            Qui i piccoli esploratori imparano giocando, sviluppando curiosità e amore per la conoscenza.
+        </p>
+    </section>
+
+    <!-- Card Bambini -->
+    <section>
+        <h2>I nostri bambini</h2>
+        <div class="cards">
+            {% for bambino in bambini %}
+            <div class="card" onclick="alert('Bambino: {{ bambino.nome }}')">
+                <img src="{{ bambino.foto if bambino.foto else url_for('static', filename='icon-192.png') }}" alt="{{ bambino.nome }}">
+                <h3>{{ bambino.nome }}</h3>
+                <p>{{ bambino.classe }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Card Eventi -->
+    <section>
+        <h2>Eventi</h2>
+        <div class="cards">
+            {% for evento in eventi %}
+            <div class="card" onclick="alert('Evento: {{ evento.titolo }}')">
+                <h3>{{ evento.titolo }}</h3>
+                <p>{{ evento.data }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Form caricamento foto -->
+    <section>
+        <h2>Carica una foto</h2>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <br>
+            <button type="submit">Invia</button>
+        </form>
+    </section>
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('{{ url_for("static", filename="sw.js") }}')
+            .then(() => { console.log('✅ Service Worker registrato'); })
+            .catch(err => console.error('Errore SW:', err));
+        }
+    </script>
+
+    <!-- Pulsante Installazione App -->
+    <script>
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            const installBtn = document.createElement('button');
+            installBtn.textContent = '📲 Installa Little Star App';
+            installBtn.style.position = 'fixed';
+            installBtn.style.bottom = '20px';
+            installBtn.style.left = '50%';
+            installBtn.style.transform = 'translateX(-50%)';
+            installBtn.style.background = '#ff5f6d';
+            installBtn.style.color = '#fff';
+            installBtn.style.padding = '10px 20px';
+            installBtn.style.border = 'none';
+            installBtn.style.borderRadius = '10px';
+            installBtn.style.fontWeight = 'bold';
+            installBtn.style.cursor = 'pointer';
+            installBtn.style.zIndex = '9999';
+            installBtn.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+            installBtn.style.fontSize = '16px';
+
+            document.body.appendChild(installBtn);
+
+            installBtn.addEventListener('click', async () => {
+                installBtn.style.display = 'none';
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`L'utente ha scelto: ${outcome}`);
+                deferredPrompt = null;
+            });
+        });
+    </script>
+
+    <!-- Debug PWA -->
+    <script src="{{ url_for('static', filename='pwa-debug.js') }}"></script>
+</body>
+</html>
