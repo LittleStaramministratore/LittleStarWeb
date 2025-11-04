@@ -1,0 +1,23 @@
+{
+  "name": "Little Star International School",
+  "short_name": "Little Star",
+  "description": "Applicazione della Little Star International School - scopri i bambini, gli eventi e carica foto.",
+  "start_url": "https://littlestarweb.onrender.com/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#162447",
+  "theme_color": "#ff5f6d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
