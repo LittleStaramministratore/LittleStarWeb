@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Little Star International School</title>
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#ff5f6d">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #162447);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: linear-gradient(90deg, #ff5f6d, #ffc371);
+      padding: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #fff;
+    }
+    section {
+      margin: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .card {
+      background: linear-gradient(145deg, #1f4068, #1b1b2f);
+      border-radius: 15px;
+      padding: 20px;
+      width: 200px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-align: center;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(255, 95, 109, 0.5);
+    }
+    .card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    form {
+      margin: 20px auto;
+      text-align: center;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+    }
+    button {
+      background: #ff5f6d;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #ffc371;
+    }
+
+    /* Pulsante installazione */
+    #installButton {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff5f6d;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      font-size: 16px;
+      display: none;
+    }
+
+    /* Popup iOS */
+    #iosPopup {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.97);
+      color: #000;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      font-size: 15px;
+      text-align: center;
+      max-width: 90%;
+      z-index: 10000;
+      line-height: 1.5;
+    }
+    #iosPopup img {
+      width: 26px;
+      height: 26px;
+      vertical-align: middle;
+      margin: 0 5px -5px 5px;
+    }
+
+    /* 👋 Benvenuto */
+    #welcomeContainer {
+      margin-top: 25px;
+      animation: fadeIn 1.5s ease;
+    }
+    #welcomeContainer img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ff5f6d;
+      vertical-align: middle;
+    }
+    #welcomeText {
+      font-size: 1.3em;
+      margin-top: 10px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <header>Little Star International School ✨</header>
+
+  <div id="welcomeContainer">
+    <img src="{{ url_for('static', filename='welcome-photo.jpeg') }}" alt="Welcome">
+    <div id="welcomeText">🌟 Welcome to Little Star!</div>
+  </div>
+
+  <!-- Audio dolce della stellina -->
+  <audio id="starSound" src="{{ url_for('static', filename='star-chime.mp3') }}" preload="auto"></audio>
+
+  <!-- Sezione Storia -->
+  <section>
+    <h2>La nostra storia</h2>
+    <p>Little Star International School nasce nel 2005 con l’obiettivo di creare un ambiente sicuro e creativo per i bambini...</p>
+  </section>
+
+  <!-- Card bambini -->
+  <section>
+    <h2>I nostri bambini</h2>
+    <div class="cards">
+      {% for bambino in bambini %}
+      <div class="card" onclick="alert('Bambino: {{ bambino.nome }}')">
+        <img src="{{ bambino.foto if bambino.foto else url_for('static', filename='icon-192.png') }}" alt="{{ bambino.nome }}">
+        <h3>{{ bambino.nome }}</h3>
+        <p>{{ bambino.classe }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Card eventi -->
+  <section>
+    <h2>Eventi</h2>
+    <div class="cards">
+      {% for evento in eventi %}
+      <div class="card" onclick="alert('Evento: {{ evento.titolo }}')">
+        <h3>{{ evento.titolo }}</h3>
+        <p>{{ evento.data }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Form caricamento -->
+  <section>
+    <h2>Carica una foto</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" required><br>
+      <button type="submit">Invia</button>
+    </form>
+  </section>
+
+  <!-- Pulsante e popup -->
+  <button id="installButton">📲 Aggiungi alla schermata Home</button>
+
+  <div id="iosPopup">
+    Tocca <img src="{{ url_for('static', filename='icon-share.png') }}" alt="Share icon">
+    e poi <strong>“Aggiungi alla schermata Home”</strong>.
+  </div>
+
+  <script>
+    // ✅ Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('{{ url_for("static", filename="sw.js") }}')
+        .then(() => console.log('✅ Service Worker registrato'))
+        .catch(err => console.error('Errore SW:', err));
+    }
+
+    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isInStandaloneMode = ('standalone' in navigator) && navigator.standalone;
+    const installBtn = document.getElementById('installButton');
+    const iosPopup = document.getElementById('iosPopup');
+    let deferredPrompt;
+
+    // 📲 Gestione installazione PWA
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!isIos) installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (isIos && !isInStandaloneMode) {
+        iosPopup.style.display = 'block';
+        setTimeout(() => iosPopup.style.display = 'none', 7000);
+      } else if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Risultato installazione:', outcome);
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      }
+    });
+
+    if (isIos && !isInStandaloneMode) {
+      installBtn.style.display = 'block';
+    }
+
+    // 🌟 Voce + suono
+    const starSound = document.getElementById('starSound');
+    function speakWelcome() {
+      const msg = new SpeechSynthesisUtterance("Welcome to Little Star!");
+      msg.lang = 'en-US';
+      speechSynthesis.speak(msg);
+      starSound.currentTime = 0;
+      starSound.play().catch(()=>{}); // in caso Safari blocchi l’audio
+    }
+
+    // PC: parte al caricamento
+    if (!isIos) {
+      window.addEventListener('load', speakWelcome);
+    }
+
+    // iPhone/iPad: parte al primo tap
+    let spoken = false;
+    window.addEventListener('click', () => {
+      if (!spoken) {
+        speakWelcome();
+        spoken = true;
+      }
+    });
+  </script>
+
+    <!-- 💬 Angelica assistente -->
+    <div id="angelica" style="position:fixed;bottom:40px;right:20px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);border-radius:30px;padding:10px 15px;backdrop-filter:blur(10px);z-index:9999;">
+      <img id="angelica-avatar" src="{{ url_for('static', filename='angelica.gif') }}" alt="Angelica" style="width:60px;height:60px;border-radius:50%;animation:float 3s ease-in-out infinite;">
+      <div id="angelica-bubble" style="color:#fff;font-size:1em;max-width:240px;">👋 Ciao! Sono Angelica, come posso aiutarti?</div>
+      <button id="angelica-mic" title="Parla" style="border:none;border-radius:50%;padding:10px;cursor:pointer;">🎤</button>
+      <button id="angelica-chat" title="Scrivi" style="border:none;border-radius:50%;padding:10px;cursor:pointer;">⌨️</button>
+    </div>
+    <style>
+      @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    </style>
+    <script>
+    async function angelicaSendMessage(text) {
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        angelicaShowReply(data.reply || "…");
+      } catch(e) {
+        angelicaShowReply("Ops, non riesco a parlare col server.");
+      }
+    }
+    function angelicaShowReply(msg) {
+      const bubble = document.getElementById("angelica-bubble");
+      if (bubble) bubble.textContent = msg;
+      if ('speechSynthesis' in window) {
+        try {
+          const utter = new SpeechSynthesisUtterance(msg);
+          // euristica semplice: se contiene lettere accentate italiane, usa it-IT
+          utter.lang = /[àèéìîòóù]/i.test(msg) ? 'it-IT' : 'en-GB';
+          speechSynthesis.speak(utter);
+        } catch(e) {}
+      }
+    }
+    function angelicaPrompt() {
+      const input = prompt("Parla o scrivi per Angelica:");
+      if (input) angelicaSendMessage(input);
+    }
+    function angelicaListen() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { angelicaPrompt(); return; }
+      const r = new SR();
+      r.lang = 'it-IT';
+      r.interimResults = false;
+      r.maxAlternatives = 1;
+      r.onresult = (ev) => {
+        const txt = ev.results[0][0].transcript;
+        angelicaSendMessage(txt);
+      };
+      r.onerror = () => angelicaPrompt();
+      r.start();
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      const mic = document.getElementById("angelica-mic");
+      const chat = document.getElementById("angelica-chat");
+      if (mic) mic.addEventListener("click", angelicaListen);
+      if (chat) chat.addEventListener("click", angelicaPrompt);
+    });
+    </script>
+    
+</body>
+</html>
