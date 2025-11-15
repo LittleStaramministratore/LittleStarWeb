@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Little Star International School</title>
+
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#ff5f6d">
+
+  <!-- FIX iPhone -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="referrer" content="no-referrer">
+
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-512.png') }}">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      overflow-x: hidden;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      animation: cambioSfondo 16s infinite alternate ease-in-out;
+    }
+
+    @keyframes cambioSfondo {
+      0% { background-image: url("{{ url_for('static', filename='school_01.jpg') }}"); }
+      100% { background-image: url("{{ url_for('static', filename='school_02.jpg') }}"); }
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    section {
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.55);
+      max-width: 850px;
+      backdrop-filter: blur(8px);
+    }
+
+    h2 { color: #ffc371; text-transform: uppercase; }
+    p { font-size: 1.1em; line-height: 1.6; }
+
+    /* ANGELICA */
+    #angelica {
+      position: fixed;
+      bottom: 25px;
+      right: 30px;
+      display: flex;
+      align-items: flex-end;
+      gap: 15px;
+      z-index: 9999;
+    }
+
+    #angelica-bubble {
+      background: rgba(255,255,255,0.15);
+      padding: 12px 16px;
+      border-radius: 16px;
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 1em;
+      max-width: 260px;
+      min-height: 40px;
+      display: none;
+      transition: opacity .3s ease;
+    }
+
+    #angelica-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255, 95, 109, 0.8);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow .3s ease;
+    }
+
+    #angelica-avatar:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 18px rgba(255, 180, 180, 1);
+    }
+
+    /* CHAT BOX */
+    #chat-container {
+      position: fixed;
+      bottom: 120px;
+      right: 30px;
+      width: 300px;
+      background: rgba(0,0,0,0.55);
+      padding: 15px;
+      border-radius: 12px;
+      display: none;
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+    }
+
+    #user-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    #send-btn, #mic-btn {
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #mic-btn { border-radius: 50%; }
+  </style>
+</head>
+
+<body>
+  <header>🌟 Little Star International School</header>
+
+  <section>
+    <h2>Benvenuto!</h2>
+    <p>Tocca Angelica per iniziare a parlare ✨</p>
+  </section>
+
+  <section>
+    <h2>Chi siamo</h2>
+    <p>
+      Little Star è un asilo nido e scuola materna internazionale di lingua inglese (0–6 anni),
+      che promuove valori umani universali e sostiene l’autostima dei bambini.
+    </p>
+  </section>
+
+  <!-- ANGELICA -->
+  <div id="angelica">
+    <div id="angelica-bubble">Ciao, sono Angelica 💫</div>
+    <img id="angelica-avatar" src="{{ url_for('static', filename='angelica_avatar.png') }}" alt="Angelica">
+  </div>
+
+  <!-- CHAT -->
+  <div id="chat-container">
+    <input id="user-input" type="text" placeholder="Scrivi qui...">
+    <div style="margin-top:10px; display:flex; gap:10px;">
+      <button id="send-btn" style="flex:1;">Invia</button>
+      <button id="mic-btn">🎤</button>
+    </div>
+  </div>
+
+  <!-- SERVICE WORKER -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js");
+      });
+    }
+  </script>
+
+  <!-- CHAT + VOICE + SAFE FOR IOS -->
+  <script>
+    const avatar = document.getElementById("angelica-avatar");
+    const bubble = document.getElementById("angelica-bubble");
+    const chatBox = document.getElementById("chat-container");
+    const input = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const micBtn = document.getElementById("mic-btn");
+
+    /* --- APERTURA CHAT (click + iPhone touch) --- */
+    const openChat = () => {
+      chatBox.style.display = "block";
+      bubble.style.display = "block";
+      bubble.innerText = "Dimmi tutto 💫";
+    };
+
+    avatar.addEventListener("click", openChat);
+    avatar.addEventListener("touchstart", openChat);
+
+    /* --- INVIO MESSAGGIO --- */
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+
+      bubble.innerText = "Sto pensando... ✨";
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({message: text})
+        });
+
+        const data = await res.json();
+        const reply = data.reply;
+
+        bubble.innerText = reply;
+
+        if ("speechSynthesis" in window) {
+          const u = new SpeechSynthesisUtterance(reply);
+          u.lang = reply.match(/[àèéìòù]/i) ? "it-IT" : "en-GB";
+          speechSynthesis.speak(u);
+        }
+      } catch (err) {
+        bubble.innerText = "Ho qualche difficoltà a parlare 💖";
+      }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
+
+    /* --- MICROFONO: disattivato su iPhone (Safari NON supporta) --- */
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    micBtn.addEventListener("click", () => {
+      if (isIOS) {
+        alert("Su iPhone il microfono non è supportato. Vuoi che attivo Whisper?");
+        return;
+      }
+
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        alert("Riconoscimento vocale non supportato.");
+        return;
+      }
+
+      const r = new SR();
+      r.lang = "it-IT";
+
+      r.onresult = (e) => {
+        input.value = e.results[0][0].transcript;
+        sendMessage();
+      };
+
+      r.start();
+    });
+  </script>
+
+</body>
+</html>
