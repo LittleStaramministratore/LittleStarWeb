@@ -1,0 +1,42 @@
+{
+  "bambini": [
+    {
+      "id": 1,
+      "nome": "Luca",
+      "gruppo": "Gialli",
+      "allergie": [
+        "latte"
+      ],
+      "stato": "sveglio",
+      "pasto": false
+    },
+    {
+      "id": 2,
+      "nome": "Giulia",
+      "gruppo": "Verdi",
+      "allergie": [],
+      "stato": "dorme",
+      "pasto": true
+    },
+    {
+      "id": 3,
+      "nome": "Sara",
+      "gruppo": "Blu",
+      "allergie": [
+        "glutine"
+      ],
+      "stato": "sveglio",
+      "pasto": false
+    }
+  ],
+  "eventi": [
+    {
+      "bambino": "Luca",
+      "tipo": "attività",
+      "descrizione": "Gioco creativo",
+      "ora": "09:15:00"
+    }
+  ],
+  "classi": [],
+  "personale": []
+}
