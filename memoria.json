@@ -1,0 +1,70 @@
+{
+  "chat": [
+    {
+      "role": "user",
+      "content": "come stanno i bambini",
+      "time": "2025-11-10T21:18:40.068888"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "time": "2025-11-10T21:18:40.092910"
+    },
+    {
+      "role": "user",
+      "content": "come stanno i bambini",
+      "time": "2025-11-10T21:19:23.885654"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "time": "2025-11-10T21:19:23.916002"
+    },
+    {
+      "role": "user",
+      "content": "hi angelica",
+      "time": "2025-11-10T21:19:45.347169"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "time": "2025-11-10T21:19:45.381575"
+    },
+    {
+      "role": "user",
+      "content": "come stanno i bambini oggi",
+      "time": "2025-11-10T21:20:08.446042"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "time": "2025-11-10T21:20:08.470953"
+    },
+    {
+      "role": "user",
+      "content": "how is the weather today",
+      "time": "2025-11-10T21:20:43.752112"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "time": "2025-11-10T21:20:43.800105"
+    },
+    {
+      "utente": "ciao angelica come stai?",
+      "timestamp": "2025-11-10T22:27:57.025134"
+    },
+    {
+      "angelica": "",
+      "timestamp": "2025-11-10T22:28:06.928772"
+    },
+    {
+      "utente": "ciao",
+      "timestamp": "2025-11-10T22:28:21.855178"
+    },
+    {
+      "angelica": "Ciao! Sono Angelica, la tua assistente di Little Star International School. Come posso aiutarti oggi? Posso darti info su attività, orari, filosofia educativa o sulle nostre aule; oppure, se ti va, raccontami del tuo bimbo/a e di cosa stai cercando, così ti consiglio il percorso più adatto.",
+      "timestamp": "2025-11-10T22:28:29.568522"
+    }
+  ]
+}
