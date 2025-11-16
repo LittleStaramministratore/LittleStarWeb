@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Little Star International School</title>
+
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#ff5f6d">
+
+  <!-- FIX iPhone / Safari -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="referrer" content="no-referrer">
+
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-512.png') }}">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      overflow-x: hidden;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      animation: cambioSfondo 16s infinite alternate ease-in-out;
+    }
+
+    @keyframes cambioSfondo {
+      0% { background-image: url("{{ url_for('static', filename='school_01.jpg') }}"); }
+      100% { background-image: url("{{ url_for('static', filename='school_02.jpg') }}"); }
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    section {
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.55);
+      max-width: 850px;
+      backdrop-filter: blur(8px);
+    }
+
+    h2 { color: #ffc371; text-transform: uppercase; }
+    p { font-size: 1.1em; line-height: 1.6; }
+
+    /* ANGELICA */
+    #angelica {
+      position: fixed;
+      bottom: 55px; /* FIX iPhone, solleva Angelica */
+      right: 30px;
+      display: flex;
+      align-items: flex-end;
+      gap: 15px;
+      z-index: 9999;
+    }
+
+    #angelica-bubble {
+      background: rgba(255,255,255,0.15);
+      padding: 12px 16px;
+      border-radius: 16px;
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 1em;
+      max-width: 260px;
+      min-height: 40px;
+      display: none;
+      transition: opacity .3s ease;
+    }
+
+    #angelica-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255, 95, 109, 0.8);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow .3s ease;
+    }
+
+    #angelica-avatar:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 18px rgba(255, 180, 180, 1);
+    }
+
+    /* CHAT BOX */
+    #chat-container {
+      position: fixed;
+      bottom: 140px; /* Alzata per iPhone */
+      right: 30px;
+      width: 300px;
+      background: rgba(0,0,0,0.55);
+      padding: 15px;
+      border-radius: 12px;
+      display: none;
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+    }
+
+    #user-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    #send-btn, #mic-btn {
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #mic-btn { border-radius: 50%; }
+  </style>
+</head>
+
+<body>
+  <header>🌟 Little Star International School</header>
+
+  <section>
+    <h2>Benvenuto!</h2>
+    <p>Tocca Angelica per iniziare a parlare ✨</p>
+  </section>
+
+  <section>
+    <h2>Chi siamo</h2>
+    <p>
+      Little Star è un asilo nido e scuola materna internazionale di lingua inglese (0–6 anni),
+      c
