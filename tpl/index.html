@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Angelica</title>
+
+<style>
+body {
+    margin: 0;
+    background: #f3f3f8;
+    font-family: Arial, sans-serif;
+}
+
+/* contenitore principale */
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding-bottom: 150px; /* spazio per la barra in basso */
+}
+
+/* barra top con titolo e selettore voce */
+#top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+#top-bar h1 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* avatar */
+#avatar-wrapper {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    text-align: center;
+    z-index: 3;
+}
+
+#avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* quando parla, facciamo una piccola animazione */
+#avatar-img.talking {
+    animation: talking 0.35s infinite alternate;
+    box-shadow: 0 0 18px rgba(255, 193, 7, 0.7);
+}
+
+@keyframes talking {
+    from {
+        transform: scale(1.0);
+    }
+    to {
+        transform: scale(1.05);
+    }
+}
+
+/* area messaggi */
+#chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+    margin-top: 10px;
+}
+
+/* stile messaggi */
+.msg {
+    padding: 11px 13px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    max-width: 80%;
+    font-size: 0.97rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.user {
+    background: #cfe3ff;
+    margin-left: auto;
+}
+
+.bot {
+    background: #ffe7c7;
+    margin-right: auto;
+}
+
+/* barra input in basso */
+#input-area {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #ffffff;
+    padding: 10px 12px;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid #cccccc;
+    z-index: 2;
+}
+
+#msg {
+    flex: 1;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* selettore voce */
+#voice-select {
+    font-size: 0.85rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+}
+</style>
+
+</head>
+<body>
+
+<div id="avatar-wrapper">
+    <!-- puoi usare angelica_avatar.png o angelica.gif -->
+    <img id="avatar-img" src="{{ url_for('static', filename='angelica_avatar.png') }}" alt="Angelica">
+</div>
+
+<div id="chat-container">
+
+    <div id="top-bar">
+        <h1>Angelica</h1>
+        <div>
+            <label for="voice-select" style="font-size:0.85rem;">Voce: </label>
+            <select id="voice-select">
+                <option value="solstice">Solstice (dolce)</option>
+                <option value="aria">Aria (calda)</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="chat"></div>
+
+    <div id="input-area">
+        <input id="msg" type="text" placeholder="Scrivi qui..." onkeydown="if(event.key==='Enter') send();" />
+        <button onclick="send()" style="padding: 0 14px; font-size:1.1rem;">➤</button>
+    </div>
+
+</div>
+
+<!-- player audio nascosto -->
+<audio id="voice-player"></audio>
+
+<script>
+function appendMessage(text, cls){
+    const div = document.createElement("div");
+    div.className = "msg " + cls;
+    div.innerText = text;
+    document.getElementById("chat").appendChild(div);
+
+    // autoscroll
+    const chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function setAvatarTalking(isTalking){
+    const img = document.getElementById("avatar-img");
+    if(isTalking){
+        img.classList.add("talking");
+    } else {
+        img.classList.remove("talking");
+    }
+}
+
+function playVoice(url){
+    const audio = document.getElementById("voice-player");
+    setAvatarTalking(true);
+    // trucco per evitare cache del browser
+    audio.src = url + "?t=" + Date.now();
+    audio.play().catch(err => {
+        console.log("Errore riproduzione audio:", err);
+        setAvatarTalking(false);
+    });
+
+    audio.onended = () => {
+        setAvatarTalking(false);
+    };
+}
+
+async function send(){
+    const campo = document.getElementById("msg");
+    const text = campo.value.trim();
+    if(!text) return;
+
+    const voiceChoice = document.getElementById("voice-select").value;
+
+    appendMessage(text, "user");
+    campo.value = "";
+
+    const response = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            message: text,
+            voice: voiceChoice
+        })
+    });
+
+    const data = await response.json();
+    const botText = data.response;
+    const audioUrl = data.audio_url;
+
+    appendMessage(botText, "bot");
+
+    if(audioUrl){
+        playVoice(audioUrl);
+    }
+}
+</script>
+
+</body>
+</html>
