@@ -1,0 +1,11 @@
+<<<<<<< HEAD
+Flask
+openai
+python-dotenv
+
+=======
+Flask
+openai
+python-dotenv
+
+>>>>>>> ae38200b0ebcb0956d312f41b98705e47ef948ff
