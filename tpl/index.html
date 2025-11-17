@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angelica – Little Star</title>
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+
+    <!-- iOS compatibility -->
+    <link rel="apple-touch-icon" href="/static/ico/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#162447">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #162447;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: #1f4068;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .chat-message {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .user {
+            background: #0f4c75;
+            margin-left: auto;
+        }
+
+        .bot {
+            background: #ff5f6d;
+            color: #fff;
+        }
+
+        .input-area {
+            padding: 10px;
+            background: #1f4068;
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #ff5f6d;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">Angelica – Assistente Little Star</div>
+
+    <div class="chat-container" id="chat"></div>
+
+    <div class="input-area">
+        <input id="userInput" type="text" placeholder="Scrivi un messaggio…">
+        <button onclick="sendMessage()">Invia</button>
+    </div>
+
+    <script>
+        function addMessage(text, sender) {
+            const chat = document.getElementById("chat");
+            const m
