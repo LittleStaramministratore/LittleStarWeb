@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angelica – Little Star Assistant</title>
+
+    <!-- CSS della chat -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#162447">
+
+    <!-- Icone (usa i tuoi path reali) -->
+    <link rel="apple-touch-icon" href="/static/ico/icon-192.png">
+
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="app-title">
+                <img src="/static/angelica_avatar.png" alt="Angelica" class="header-avatar">
+                <div>
+                    <div class="title">Angelica</div>
+                    <div class="subtitle">Assistente Little Star</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="chat-wrapper">
+            <div id="chat" class="chat-messages">
+                <!-- Messaggi dinamici qui -->
+            </div>
+        </main>
+
+        <footer class="input-bar">
+            <input
+                id="userInput"
+                type="text"
+                placeholder="Scrivi un messaggio…"
+                autocomplete="off"
+            />
+            <button id="sendBtn">Invia</button>
+        </footer>
+    </div>
+
+    <!-- JS della chat -->
+    <script src="script.js"></script>
+
+    <!-- Registrazione Service Worker -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/service-worker.js")
+                .then(() => console.log("SW registrato ✔"))
+                .catch(err => console.error("Errore SW:", err));
+        }
+    </script>
+</body>
+</html>
