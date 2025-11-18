@@ -1,0 +1,95 @@
+tpl/index.html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Angelica – Little Star</title>
+
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#162447">
+
+    <style>
+        body { margin:0; background:#162447; color:white; display:flex; flex-direction:column; height:100vh; }
+        .header { text-align:center; padding:15px; background:#1f4068; font-size:1.4rem; font-weight:bold; }
+        .chat-container { flex:1; overflow-y:auto; padding:15px; }
+        .chat-row { display:flex; align-items:flex-start; margin-bottom:12px; }
+        .chat-row.user { justify-content:flex-end; }
+        .chat-message { padding:10px; border-radius:10px; max-width:80%; white-space:pre-wrap; }
+        .chat-row.user .chat-message { background:#0f4c75; }
+        .chat-row.bot .chat-message { background:#ff5f6d; }
+        .avatar { width:38px; height:38px; border-radius:50%; margin-right:8px; }
+        .input-area { padding:10px; display:flex; gap:10px; background:#1f4068; }
+        .input-area input { flex:1; padding:10px; border-radius:8px; border:none; }
+        .input-area button { padding:10px 20px; background:#ff5f6d; border:none; border-radius:8px; color:white; }
+    </style>
+</head>
+
+<body>
+
+<div class="header">Angelica – Assistente Little Star</div>
+<div id="chat" class="chat-container"></div>
+
+<div class="input-area">
+    <input id="userInput" type="text" placeholder="Scrivi un messaggio…">
+    <button onclick="sendMessage()">Invia</button>
+</div>
+
+<script>
+function isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function addMessage(text, sender) {
+    const chat = document.getElementById("chat");
+    const row = document.createElement("div");
+    row.classList.add("chat-row", sender);
+
+    if (sender === "bot") {
+        const avatar = document.createElement("img");
+        avatar.src = "/static/angelica.gif";
+        avatar.classList.add("avatar");
+        row.appendChild(avatar);
+    }
+
+    const msg = document.createElement("div");
+    msg.classList.add("chat-message");
+    msg.textContent = text;
+    row.appendChild(msg);
+
+    chat.appendChild(row);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    const res = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: text})
+    });
+
+    const data = await res.json();
+    addMessage(data.response, "bot");
+
+    if (!isMobile() && data.audio_url) {
+        new Audio(data.audio_url).play().catch(()=>{});
+    }
+}
+
+document.getElementById("userInput").addEventListener("keypress", e => {
+    if (e.key === "Enter") sendMessage();
+});
+</script>
+
+<script src="/static/install.js"></script>
+<script src="/static/pwa-debug.js"></script>
+
+</body>
+</html>
